@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anzhen.mapper.UserMapper">
+    <!--    绑定mapper 文件-->
+
+<!--    这个是  实体类和 数据库表字段的映射　-->
+    <resultMap id="BaseResultMap" type="com.anzhen.entity.User">
+<!--        映射ｉｄ　-->
+        <result column="id" jdbcType="INTEGER" property="id" />
+<!--        映射　ｎａｍｅ-->
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="head" jdbcType="VARCHAR" property="head" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="email" jdbcType="VARCHAR" property="email" />
+        <result column="notice" jdbcType="VARCHAR" property="notice" />
+        <result column="slogan" jdbcType="VARCHAR" property="slogan" />
+        <result column="desc" jdbcType="VARCHAR" property="desc" />
+    </resultMap>
+
+    <update id="updateUser">
+        update user
+            <set>
+                <if test="name  != null and name!='' ">
+                    name = #{name},
+                </if>
+                <if test="head != null and head!='' ">
+                     head = #{head},
+                </if>
+                <if test="password != null and password!='' ">
+                     password = #{password},
+                </if>
+                <if test="email != null and email != '' ">
+                     email = #{email},
+                </if>
+                <if test="notice != null and notice != '' ">
+                    notice = #{notice},
+                </if>
+                <if test="slogan != null and slogan != '' ">
+                    slogan = #{slogan},
+                </if>
+                <if test="email != null and email != '' ">
+                    `desc` = #{desc},
+                </if>
+             </set>
+        WHERE id = #{id};
+    </update>
+
+    <insert id="insertUser">
+        insert into user(name,head,password,email,`desc`,notice, slogan)
+        value (#{name},#{head},#{password},#{email},#{desc},#{notice},#{slogan})
+    </insert>
+
+
+    <delete id="deleteUser">
+        delete from user where id=#{id}
+    </delete>
+
+    <select id="queryUserById" resultType="com.anzhen.entity.User">
+        select * from user where id = #{id}
+    </select>
+
+
+    <select id="queryUserByName" resultType="com.anzhen.entity.User">
+        select * from user where  name = #{name}
+    </select>
+    <select id="queryRoleById" resultType="com.anzhen.entity.Role">
+        select r.* from role r where r.id =
+        (select distinct  ru.role_id from user u, role_user ru where ru.id = #{id})
+    </select>
+
+
+    <select id="selectUserPermissionById" resultType="java.util.LinkedHashMap">
+        SELECT u.*, r.`role_name`,r.role,
+               GROUP_CONCAT(p.permission_name)permissionsNameList,
+               GROUP_CONCAT(p.per_remarks)perRemarksList
+        FROM
+            user u,
+            role r,
+            permissions p,
+            role_user ur,
+            role_permissions rp
+        WHERE
+            u.id=ur.user_id AND
+            ur.role_id=r.id AND
+            r.id=rp.role_id AND
+            rp.permissions_id=p.id AND
+            u.id=#{id}
+        GROUP BY u.id
+    </select>
+
+
+
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anzhen.mapper.PermissionMapper">
+
+
+    <select id="queryAll" resultType="com.anzhen.entity.Permission">
+        select * from  permissions
+    </select>
+
+
+    <select id="queryPermissionsByRoleId" resultType="com.anzhen.entity.Permission">
+        SELECT distinct p.*
+        from role r, role_permissions rp, permissions p
+        where rp.role_id = #{id} AND p.id = rp.permissions_id
+    </select>
+
+
+</mapper>

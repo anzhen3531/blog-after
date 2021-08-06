@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anzhen.mapper.BlogMapper">
+    <!--    绑定mapper 文件-->
+
+    <!--    这个是  实体类和 数据库表字段的映射　-->
+    <resultMap id="BaseResultMap" type="com.anzhen.entity.Blog">
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="is_top" jdbcType="BOOLEAN" property="isTop"/>
+        <result column="is_hot" jdbcType="BOOLEAN" property="isHot"/>
+        <result column="banner" jdbcType="VARCHAR" property="banner"/>
+        <result column="create_time" jdbcType="DATE" property="createTime"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="summary" jdbcType="VARCHAR" property="summary"/>
+        <result column="views_count"  property="viewsCount"/>
+        <result column="comments_count" property="commentsCount"/>
+        <result column="md_content" property="mdContent"/>
+    </resultMap>
+    <insert id="insertBlog">
+        insert into blog(is_top, is_hot, banner, create_time, title, summary, views_count, comments_count, md_content)
+        value (#{isTop},#{isHot},#{banner},#{createTime},#{title},#{summary},#{viewsCount},#{commentsCount}, #{mdContent})
+    </insert>
+    <update id="updateBlog">
+        update blog
+        <set>
+            is_hot = #{isHot},
+            is_top = #{isTop},
+            <if test="banner != null and banner!='' ">
+                banner = #{banner},
+            </if>
+
+            <if test="createTime != null ">
+                create_time = #{createTime},
+            </if>
+
+            <if test="title != null and title != '' ">
+                title = #{title},
+            </if>
+
+            <if test="summary != null and summary != '' ">
+                summary = #{summary},
+            </if>
+
+            <if test="viewsCount != null and viewsCount != '' ">
+                views_count = #{viewsCount},
+            </if>
+
+            <if test="commentsCount != null and commentsCount != '' ">
+                comments_count = #{commentsCount},
+            </if>
+
+            <if test="mdContent != null and mdContent !='' ">
+                md_content = #{mdContent}
+            </if>
+
+        </set>
+        WHERE id = #{id};
+    </update>
+    <update id="updateBlogContent">
+        update blog
+        <set>
+            <if test="mdContent != null and mdContent !='' ">
+                md_content = #{mdContent}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="queryAll" resultType="com.anzhen.entity.Blog">
+        select * from blog;
+    </select>
+
+    <select id="getBlogByPage" resultType="com.anzhen.entity.Blog">
+        select * from blog
+    </select>
+
+    <select id="getBlogByContext" resultType="com.anzhen.entity.Blog">
+        select * from blog where id = #{id}
+    </select>
+    <select id="queryLike" resultType="com.anzhen.entity.Blog" parameterType="string">
+        select *
+        from blog
+        where upper(title) Like upper(CONCAT('%',#{name},'%'))
+    </select>
+    <select id="queryTitleStrings" resultType="java.lang.String">
+        select title from blog;
+    </select>
+    <select id="queryMdContent" resultType="java.lang.String">
+        select md_content from blog where id=#{id}
+    </select>
+    <select id="queryBlogById" resultType="com.anzhen.entity.Blog">
+        select is_top, is_hot, banner, create_time, title, summary, views_count, comments_count from blog where id=#{id}
+    </select>
+</mapper>

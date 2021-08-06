@@ -1,0 +1,53 @@
+server:
+  port: 9999
+  #本地路径  为了映射md中的图片文件，必须填
+# 加载Mybatis mapper 文件
+mybatis:
+  configuration:
+    default-statement-timeout: 30
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.anzhen.entity
+
+pagehelper:
+  helper-dialect: mysql
+  params: count=countSql
+  reasonable: true
+  support-methods-arguments: true
+
+logging:
+  level:
+    com:
+      anzhen:
+        mapper: debug
+
+spring:
+  datasource:
+    username: root
+    password: anzhen3531
+    url: jdbc:mysql://localhost:3306/anzhenblog?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    host: 192.168.1.57
+    port: 6379
+
+
+# token配置
+token:
+  header: 'Authorization'
+  secret: '0123456789_0123456789_0123456789'
+  expireTime: 30
+
+
+anzhen:
+  token-ignore-url:
+    - /token/check    # 校验token
+    - /token/refresh  # 刷新token
+    - /user/login  # 登录请求
+    - /user/logout  # 退出登录请求","",  "","","
+#    - /article/*
+#    - /blog/*
+#    - /queryBlogInfo/*
+#    - /category
+#    - /search/*
+
