@@ -50,9 +50,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         log.info( "使用UserServiceDetail中验证" + username);
 
         User user = userService.queryUserByName(username);
+
         if (user == null) {
             throw new RuntimeException("用户不存在");
         }
+
         log.info("登录进入此地");
         UserDetail userDetail  = new UserDetail();
         userDetail.setUser(user);

@@ -3,7 +3,7 @@ package com.anzhen.security.utils;
 import cn.hutool.core.util.StrUtil;
 import com.anzhen.service.auth.UserDetail;
 import com.anzhen.utils.CommonConstant;
-import com.anzhen.utils.RedisService;
+import com.anzhen.utils.redis.RedisService;
 import com.anzhen.utils.jwt.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,19 +66,15 @@ public class TokenService {
     public UserDetail getCommonUser(HttpServletRequest request) {
         // 从请求头获取token
         String token = getToken(request);
-        System.out.println(token);
-        // 没有任何问题
-        System.out.println(StrUtil.isNotEmpty(token));
+        log.info("进入获取 token 中 ");
         if(StrUtil.isNotEmpty(token)){
             Map<String,Object> map = JwtUtils.parseToken(token, secret);
             log.info(map.toString());
             String uuid = map.get(CommonConstant.TOKEN_KEY).toString();
             System.out.println(uuid);
             String loginTokenKey = getKey(uuid);
-            System.out.println(loginTokenKey);
             // 放入redis中
             UserDetail commonUser = redisService.get(loginTokenKey);
-            System.out.println(commonUser);
             return commonUser;
         }
         return null;
@@ -143,7 +139,7 @@ public class TokenService {
      *
      */
     public Boolean deleteToken(String token){
-        if(!StrUtil.isNotEmpty(token)){
+        if(StrUtil.isNotEmpty(token)){
             log.info("正在删除token" + token);
             return redisService.del(CommonConstant.TOKEN_REDIS_KEY+token);
         }

@@ -1,4 +1,4 @@
-package com.anzhen.utils;
+package com.anzhen.utils.redis;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;

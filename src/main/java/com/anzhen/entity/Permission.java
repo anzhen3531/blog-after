@@ -14,6 +14,7 @@ import java.io.Serializable;
 
 @Data
 public class Permission implements Serializable {
+
     private static final long serialVersionUID = -55455731078448652L;
     // id
     private Integer id;

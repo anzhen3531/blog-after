@@ -26,4 +26,10 @@
     <select id="queryRoleByUserId" resultType="com.anzhen.entity.Role">
         select distinct r.* from user u, role_user ru, role r where ru.role_id = r.id and #{id} = ru.user_id;
     </select>
+
+    <select id="queryRoleByPermissionId" resultType="com.anzhen.entity.Role">
+        select distinct r.*
+        from role_permissions rp, role r , permissions p
+        where rp.role_id = r.id and rp.permissions_id = p.id and p.id=#{id}
+    </select>
 </mapper>

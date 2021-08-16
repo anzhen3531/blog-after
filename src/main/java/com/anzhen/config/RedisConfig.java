@@ -1,6 +1,6 @@
 package com.anzhen.config;
 
-import com.anzhen.utils.FastJson2JsonRedisSerializer;
+import com.anzhen.utils.redis.FastJson2JsonRedisSerializer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

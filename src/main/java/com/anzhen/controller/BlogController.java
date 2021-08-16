@@ -79,7 +79,7 @@ public class BlogController {
 
 
     // 修改博客基本信息
-    @PreAuthorize("@pm.hasPermission('/updateBlog')")
+//    @PreAuthorize("@pm.hasPermission('/updateBlog')")
     @PostMapping("/updateBlog/{id}")
     public Result updateBlog(@PathVariable("id") int id, @RequestBody Map<String, Blog> blog){
         System.out.println(" 进入修改 ");
@@ -93,7 +93,7 @@ public class BlogController {
 
 
     @PostMapping("/updateBlogContent")
-    @PreAuthorize("@pm.hasPermission('/updateBlogContent')")
+//    @PreAuthorize("@pm.hasPermission('/updateBlogContent')")
     // 修改博客内容
     public Result updateContent(@RequestBody Blog blogInfo){
         blogService.updateBlogContent(blogInfo);
@@ -102,7 +102,7 @@ public class BlogController {
 
 
     @PostMapping("/addBlogInfo")
-    @PreAuthorize("@pm.hasPermission('/addBlogInfo')")
+//    @PreAuthorize("@pm.hasPermission('/addBlogInfo')")
     // 添加博客  使用文件 添加  需要用到文件接收
     public Result addBlog(@RequestBody Blog blog){
         // 接收到添加数据
@@ -113,7 +113,7 @@ public class BlogController {
     }
 
     @PostMapping("/addBlogFile")
-    @PreAuthorize("@pm.hasPermission('/addBlogFile')")
+//    @PreAuthorize("@pm.hasPermission('/addBlogFile')")
     public Result upload(@RequestBody  MultipartFile file) {
         if (file.isEmpty()) {
             return Result.error(ResultCodeEnum.FILE_UPLOAD_ERROR, "上传失败，请选择文件");

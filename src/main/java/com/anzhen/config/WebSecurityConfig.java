@@ -1,11 +1,14 @@
 package com.anzhen.config;
 
+import com.anzhen.security.component.UrlAccessDecisionManager;
 import com.anzhen.security.customResult.*;
+import com.anzhen.security.component.MyFilterInvocationSecurityMetadataSource;
 import com.anzhen.security.filter.TokenFiler;
 import com.anzhen.service.auth.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.annotation.Resource;
@@ -45,7 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     CustomizeAuthenticationLoginSuccessHandler customizeAuthenticationLoginSuccessHandler;
 
     @Resource
-    CustomizeAccessDecisionManager accessDecisionManager;
+    CustomizeAccessDeniedHandler accessDecisionManager;
 
     @Resource
 //    请求登出处理类
@@ -58,6 +62,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     TokenFiler tokenFiler;
 
 
+    @Resource
+    MyFilterInvocationSecurityMetadataSource myFilterInvocationSecurityMetadataSource;
+
+    @Resource
+    UrlAccessDecisionManager urlAccessDecisionManager;
+
+
+    private ObjectPostProcessor<FilterSecurityInterceptor> filterSecurityInterceptorObjectPostProcessor() {
+        return new ObjectPostProcessor<FilterSecurityInterceptor>() {
+            @Override
+            public <O extends FilterSecurityInterceptor> O postProcess(O object) {
+                object.setAccessDecisionManager(urlAccessDecisionManager);
+                object.setSecurityMetadataSource(myFilterInvocationSecurityMetadataSource);
+                return object;
+            }
+        };
+    }
 
 
     /**
@@ -65,8 +86,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
         http
-                // 退出请求路径
+                .cors().and()
                 .logout().logoutUrl("/user/logout")
                 .logoutSuccessHandler(customizeLogoutSuccessHandler)
                 .and()
@@ -79,7 +101,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/login","/user/logout", "/swagger-ui.html#/**").permitAll()//设置login不进行权限控制
                 // 解决了我跨域问题
                 .antMatchers(HttpMethod.OPTIONS).permitAll()   // 允许跨域
-                .anyRequest().authenticated()  // 其余接口都要走那个授权
+                .anyRequest().authenticated()
+                // 其余接口都要走那个授权
+                // 设置 url 授权
+                .withObjectPostProcessor(filterSecurityInterceptorObjectPostProcessor())
                 .and()
                 .exceptionHandling()
                 //   权限不足返回
@@ -87,20 +112,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //  匿名用户访问无权资源异常
                 .authenticationEntryPoint(commonAuthenticationEntryPoint)
                 .and()
-                .addFilterBefore(tokenFiler, UsernamePasswordAuthenticationFilter.class)
+                        .addFilterBefore(tokenFiler, UsernamePasswordAuthenticationFilter.class)
+//                        .addFilterBefore(filterSecurityInterceptor, FilterSecurityInterceptor.class)
                 .csrf().disable().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
     }
-
-    /**
-     * 注入自己的权限拦截器
-     */
-//    public DefaultWebSecurityExpressionHandler webSecurityExpressionHandler(){
-//        DefaultWebSecurityExpressionHandler handler = new DefaultWebSecurityExpressionHandler();
-//        handler.setPermissionEvaluator(new CustomPermissionEvaluator());
-//        return handler;
-//    }
 
     /**
      * 密码处理
@@ -111,12 +128,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(bCryptPasswordEncoder());
     }
 
-//    /**
-//     * 配置哪些请求不拦截
-//     */
+   /**
+    * 配置哪些请求不拦截
+    */
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/article/*","/category",  "/search/*","/queryBlogInfo/*","/blog/*");
+        web.ignoring().antMatchers(
+                "/article/*",
+                "/category",
+                "/search/*",
+                "/editBlog/*",
+                "/queryBlogInfo/*",
+                "/blog/*",
+                "/v2/api-docs",
+                "/swagger-resources/configuration/ui",
+                "/swagger-resources",
+                "/swagger-resources/configuration/security",
+                "/swagger-ui.html");
      }
 
     @Bean
@@ -125,5 +153,3 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 }
-
-

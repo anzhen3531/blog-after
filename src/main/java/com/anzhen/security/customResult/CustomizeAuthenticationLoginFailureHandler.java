@@ -38,20 +38,24 @@ public class CustomizeAuthenticationLoginFailureHandler implements Authenticatio
 
         log.info("进入错误判断");
         JSONObject result = null;
+
         if (e instanceof AccountExpiredException) {
             //账号过期
-            result = new JSONObject(Result.error(ResultCodeEnum.USER_ACCOUNT_EXPIRED));
-        } else if (e instanceof BadCredentialsException) {
+            result = new JSONObject(Result.error(ResultCodeEnum.LOGIN_IS_OVERDUE, "账号过期"));
+        }else if (e instanceof BadCredentialsException) {
             //密码错误
             result =  new JSONObject(Result.error(ResultCodeEnum.NAME_PASSWORD_ERROR));
+
         } else if (e instanceof CredentialsExpiredException) {
+            // 没有该账号
             result =  new JSONObject(Result.error(ResultCodeEnum.USERNAME_NOTFIND));
         }else{
+
             //其他错误
             result =  new JSONObject(Result.error(ResultCodeEnum.USERNAME_NOTFIND));
         }
         //处理编码方式，防止中文乱码的情况
-        httpServletResponse.addHeader("Access-Control-Allow-Origin", "*");
+
         httpServletResponse.setContentType("application/json;charset=utf-8");
         //塞到HttpServletResponse中返回给前台
         httpServletResponse.getWriter().write(result.toString());

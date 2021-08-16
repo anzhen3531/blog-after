@@ -1,4 +1,4 @@
-package com.anzhen.utils;
+package com.anzhen.utils.redis;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;

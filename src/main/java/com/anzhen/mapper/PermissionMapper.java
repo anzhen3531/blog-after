@@ -1,6 +1,7 @@
 package com.anzhen.mapper;
 
 import com.anzhen.entity.Permission;
+import com.anzhen.entity.Role;
 
 import java.util.List;
 
@@ -13,7 +14,10 @@ import java.util.List;
  */
 
 public interface PermissionMapper {
+    
     List<Permission> queryAll();
 
     List<Permission> queryPermissionsByRoleId(int id);
+
+    List<Role> queryRoleByUrl(String url);
 }

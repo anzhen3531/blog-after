@@ -43,7 +43,6 @@ public class CustomizeLogoutSuccessHandler implements LogoutSuccessHandler {
             System.out.println(aBoolean  + " redis 是否清理完成token ");
             log.info("==== 用户【{}】在 {} 退出了系统" ,commonUser.getUsername(), DateUtil.nowString());
         }
-        httpServletResponse.addHeader("Access-Control-Allow-Origin", "*");
         httpServletResponse.setContentType("application/json;charset=utf-8");
         httpServletResponse.getWriter().write(result.toString());
     }

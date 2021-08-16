@@ -1,5 +1,5 @@
 server:
-  port: 9999
+  port: 9990
   #本地路径  为了映射md中的图片文件，必须填
 # 加载Mybatis mapper 文件
 mybatis:
@@ -23,12 +23,12 @@ logging:
 
 spring:
   datasource:
-    username: root
-    password: anzhen3531
-    url: jdbc:mysql://localhost:3306/anzhenblog?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    username: anzhen
+    password: 123456
+    url: jdbc:mysql://192.168.124.49:3306/anzhenblog?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
   redis:
-    host: 192.168.1.57
+    host: 192.168.124.50
     port: 6379
 
 
@@ -45,9 +45,9 @@ anzhen:
     - /token/refresh  # 刷新token
     - /user/login  # 登录请求
     - /user/logout  # 退出登录请求","",  "","","
-#    - /article/*
-#    - /blog/*
-#    - /queryBlogInfo/*
-#    - /category
-#    - /search/*
+    - /article/*
+    - /blog/*
+    - /queryBlogInfo/*
+    - /category
+    - /search/*
 

@@ -52,7 +52,6 @@ public class CustomizeAuthenticationLoginSuccessHandler extends SavedRequestAwar
         Map<String, Object> result = new HashMap<>();
         result.put("token", token);
         result.put("userinfo", principal.getUser());
-        httpServletResponse.addHeader("Access-Control-Allow-Origin", "*");
         httpServletResponse.setContentType("application/json;charset=UTF-8");
         System.out.println(new JSONObject(Result.success(result)).toString());
         httpServletResponse.getWriter().write(new JSONObject(Result.success(result)).toString());

@@ -28,4 +28,6 @@ public interface RoleMapper {
 
     List<Role> queryRoleByUserId(int id);
 
+    List<Role> queryRoleByPermissionId(int id);
+
 }

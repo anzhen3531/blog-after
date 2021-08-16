@@ -6,6 +6,8 @@ import com.anzhen.utils.result.ResultCodeEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -28,15 +30,20 @@ public class CustomizeAuthenticationEntryPoint implements AuthenticationEntryPoi
     @Autowired
     ObjectMapper objectMapper;
 
+
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
 
         log.info("进入返回状态");
-        response.addHeader("Access-Control-Allow-Origin", "*");
         response.setContentType("application/json;charset=utf-8");
-        response.getWriter().write(new JSONObject(Result.error(ResultCodeEnum.NOT_LOGIN, "没有登录账号")).toString());
+        System.out.println(authException.getMessage());
+        if (authException instanceof AccountExpiredException){
+            response.getWriter().write(new JSONObject(Result.error(ResultCodeEnum.LOGIN_IS_OVERDUE, "登录已失效")).toString());
+        }else {
+            response.getWriter().write(new JSONObject(Result.error(ResultCodeEnum.NOT_LOGIN, "没有登录账号")).toString());
+        }
     }
 }
 

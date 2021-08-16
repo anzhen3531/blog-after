@@ -11,6 +11,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.util.Collection;
+
 /**
  * @Classname : CommonHasPermission
  * @Date : 21/08/02 15:34
@@ -43,9 +45,6 @@ public class CommonHasPermission {
                 return true;
             }
         }
-
-//        Collection<? extends GrantedAuthority> authorities = commonUser.getAuthorities();
-//        authorities.stream();
 
         return false;
     }
